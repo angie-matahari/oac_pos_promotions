@@ -1,0 +1,77 @@
+<odoo>
+  <data>
+    <!-- pos.promotion tree view -->
+    <record id="pos_promotion_view_tree" model="ir.ui.view">
+      <field name="name">pos.promotion.view.tree</field>
+      <field name="model">pos.promotion</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="promotion_code"/>
+          <field name="start_date"/>
+          <field name="end_date"/>
+          <field name="status"/>
+        </tree>
+      </field>
+    </record>
+
+    <!-- pos.promotion form view -->
+    <record id="pos_promotion_view_form" model="ir.ui.view">
+      <field name="name">pos.promotion.view.form</field>
+      <field name="model">pos.promotion</field>
+      <field name="arch" type="xml">
+        <form string="POS Promotion">
+          <header>
+            <button name="button_confirm" states="draft" string="Confirm" type="object" class="oe_highlight" groups="point_of_sale.group_pos_manager"/>
+            <button name="button_start" string="Start Promotion" type="object" states="confirm" class="oe_highlight" groups="point_of_sale.group_pos_manager"/>
+            <button name="button_end" type="object" states="in_progress" string="End Promotion" class="oe_highlight" groups="point_of_sale.group_pos_manager"/>
+            <button name="button_cancel" type="object" states="in_progress,confirm" string="Cancel Promotion" groups="point_of_sale.group_pos_manager"/>
+            <button name="button_draft" type="object" states="cancel" string="Cancel Promotion" class="oe_highlight" groups="point_of_sale.group_pos_manager"/>
+            <field name="state" widget="statusbar" statusbar_visible="draft,confirm,in_progress,ended,cancel" readonly="1"/>
+          </header>
+          <sheet>
+            <div class="oe_button_box" name="button_box">
+            <button name="action_view_pos_order_lines" string="POS Orders" type="object" class="oe_stat_button" icon="fa-">
+              <field name="pos_order_count"/>
+            </button>
+            </div>
+            <widget name="web_ribbon" title="Promotion In Progress" attrs="{'invisible': [('state', '!=', 'in_progress')]}"/>
+            <widget name="web_ribbon" title="Promotion Ended" attrs="{'invisible': [('state', '!=', 'ended')]}"/>         
+            <group>
+              <group>
+                <field name="name" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+              </group>
+              <group>
+                <field name="from_date" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                <field name="to_date" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+              </group>
+            </group>
+            <notebook>
+              <page name="promo_products" string="Promotion Products">
+                <field name="promotion_item_ids" attrs="{'readonly': [('state', '!=', 'draft')]}">
+                  <field name="promotion_product_id"/>
+                  <field name="promotion_price"/>
+                </field>
+              </page>
+            </notebook>
+          </sheet>
+          <div class="oe_chatter">
+            <field name="message_follower_ids"/>
+            <field name="message_ids"/>
+          </div>
+        </form>
+      </field>
+    </record>
+
+    <!-- pos.promotion action window -->
+    <record id="pos_promotion_action" model="ir.actions.act_window">
+      <field name="name">pos.promotion.action</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">pos.promotion</field>
+      <field name="view_mode">tree,form</field>
+      <field name="view_type">form</field>
+    </record>
+
+    <menuitem id="pos_promotion_menu_act" name="POS Promotions" parent="point_of_sale.menu_point_config_product" action="pos_promotion_action" sequence="30"/>
+  </data>
+</odoo>

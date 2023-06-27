@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="Orderline" t-inherit="point_of_sale.Orderline" t-inherit-mode="extension" owl="1">
+        <xpath expr="//ul[hasclass('info-list')]" position="inside">
+            <t t-if="props.line.promotion_code">
+                <li class="info">
+                    <span style="color: #6ec89b;font-size: 14px;">
+                        PROMO-
+                        <t t-esc="props.line.promotion_code"/>
+                        Applied
+                    </span>
+                </li>
+            </t>
+        </xpath>
+    </t>
+</templates>
